@@ -12,34 +12,16 @@ import concurrent.futures
 
 
 class Ai:
-    def __init__(self, model_path, embeddings_path, modeltype='quant'):
+    def __init__(self, model_path, modeltype='quant'):
         self.model_path = model_path
-        self.embeddings_path = embeddings_path
         self.modeltype = modeltype
-        self.width = 224
-        self.height = 224
+        self.width = 192
+        self.height = 192
 
     def initialize(self):
         start = time.time()
 
         self.init_tflite()
-
-        print('Create Embeddigns')
-        with open(self.embeddings_path, 'r') as f:
-            embeddings_data = json.load(f)
-
-        data = embeddings_data['Embedding']
-        self.embeddings = [np.array(data[str(i)]) for i in range(len(data))]
-
-        data = embeddings_data['Name']
-        self.names = [np.array(data[str(i)]) for i in range(len(data))]
-
-        data = embeddings_data['File']
-        self.files = [np.array(data[str(i)]) for i in range(len(data))]
-
-        self.celeb_embeddings = self.split_data_frame(
-                                      self.embeddings,
-                                      int(np.ceil(len(self.embeddings)/4)))
 
         print('Initialization done (duration: {})'.format(time.time() - start))
 
@@ -52,6 +34,9 @@ class Ai:
         elif face.shape < (self.width, self.height):
             face = cv2.resize(face, (self.width, self.height),
                               interpolation=cv2.INTER_CUBIC)
+
+        #TODO resize with pad vide 
+        # image = tf.image.resize_with_pad(image, 192, 192)
 
         print('Preprocess')
         if self.modeltype is 'quant':
@@ -71,35 +56,39 @@ class Ai:
 
         print('Create EUdist')
         start = time.time()
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            result_1 = executor.submit(self.faceembedding, output_data,
-                                       np.array(self.celeb_embeddings[0]))
-            result_2 = executor.submit(self.faceembedding, output_data,
-                                       np.array(self.celeb_embeddings[1]))
-            result_3 = executor.submit(self.faceembedding, output_data,
-                                       np.array(self.celeb_embeddings[2]))
-            result_4 = executor.submit(self.faceembedding, output_data,
-                                       np.array(self.celeb_embeddings[3]))
+        # with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        #     result_1 = executor.submit(self.faceembedding, output_data,
+        #                                np.array(self.celeb_embeddings[0]))
+        #     result_2 = executor.submit(self.faceembedding, output_data,
+        #                                np.array(self.celeb_embeddings[1]))
+        #     result_3 = executor.submit(self.faceembedding, output_data,
+        #                                np.array(self.celeb_embeddings[2]))
+        #     result_4 = executor.submit(self.faceembedding, output_data,
+        #                                np.array(self.celeb_embeddings[3]))
 
-        EUdist = []
-        if result_1.done() & result_2.done() & result_3.done() & result_4.done():
-            EUdist.extend(result_1.result())
-            EUdist.extend(result_2.result())
-            EUdist.extend(result_3.result())
-            EUdist.extend(result_4.result())
+        # EUdist = []
+        # if result_1.done() & result_2.done() & result_3.done() & result_4.done():
+        #     EUdist.extend(result_1.result())
+        #     EUdist.extend(result_2.result())
+        #     EUdist.extend(result_3.result())
+        #     EUdist.extend(result_4.result())
 
-        idx = np.argpartition(EUdist, 5)
-        idx = idx[:5]
+        # idx = np.argpartition(EUdist, 5)
+        # idx = idx[:5]
 
-        top5 = dict()
-        for id in idx:
-            top5[id] = [EUdist[id], self.names[id], self.files[id]]
+        # top5 = dict()
+        # for id in idx:
+        #     top5[id] = [EUdist[id], self.names[id], self.files[id]]
 
-        top5 = {key: value for key, value in sorted(top5.items(), key=lambda item: item[1][0])}
+        # top5 = {key: value for key, value in sorted(top5.items(), key=lambda item: item[1][0])}
 
-        print('EUdist duration: {}'.format(time.time() - start))
+        # print('EUdist duration: {}'.format(time.time() - start))
 
-        return top5
+        #TODO POSTPROCESSING
+
+
+
+        return output_data
 
     def init_tflite(self):
 
@@ -127,11 +116,11 @@ class Ai:
         print('Interpreter done ({})'.format(time.time() - start))
         return output_data
 
-    def split_data_frame(self, df, chunk_size):
-        list_of_df = list()
-        number_chunks = len(df) // chunk_size + 1
-        for i in range(number_chunks):
-            list_of_df.append(df[i*chunk_size:(i+1)*chunk_size])
+    # def split_data_frame(self, df, chunk_size):
+    #     list_of_df = list()
+    #     number_chunks = len(df) // chunk_size + 1
+    #     for i in range(number_chunks):
+    #         list_of_df.append(df[i*chunk_size:(i+1)*chunk_size])
 
         return list_of_df
 
@@ -154,35 +143,35 @@ class Ai:
         elif version == 2:
             if data_format == 'channels_first':
                 x_temp = x_temp[:, ::-1, ...]
-                x_temp[:, 0, :, :] -= 91.4953
-                x_temp[:, 1, :, :] -= 103.8827
-                x_temp[:, 2, :, :] -= 131.0912
+                # x_temp[:, 0, :, :] -= 91.4953
+                # x_temp[:, 1, :, :] -= 103.8827
+                # x_temp[:, 2, :, :] -= 131.0912
             else:
                 x_temp = x_temp[..., ::-1]
-                x_temp[..., 0] -= 91.4953
-                x_temp[..., 1] -= 103.8827
-                x_temp[..., 2] -= 131.0912
+                # x_temp[..., 0] -= 91.4953
+                # x_temp[..., 1] -= 103.8827
+                # x_temp[..., 2] -= 131.0912
 
         elif version == 3:
             if data_format == 'channels_first':
                 x_temp = x_temp[:, ::-1, ...]
-                x_temp[:, 0, :, :] -= np.round(91.4953).astype('uint8')
-                x_temp[:, 1, :, :] -= np.round(103.8827).astype('uint8')
-                x_temp[:, 2, :, :] -= np.round(131.0912).astype('uint8')
+                # x_temp[:, 0, :, :] -= np.round(91.4953).astype('uint8')
+                # x_temp[:, 1, :, :] -= np.round(103.8827).astype('uint8')
+                # x_temp[:, 2, :, :] -= np.round(131.0912).astype('uint8')
             else:
                 x_temp = x_temp[..., ::-1]
-                x_temp[..., 0] -= np.round(91.4953).astype('uint8')
-                x_temp[..., 1] -= np.round(103.8827).astype('uint8')
-                x_temp[..., 2] -= np.round(131.0912).astype('uint8')
+                # x_temp[..., 0] -= np.round(91.4953).astype('uint8')
+                # x_temp[..., 1] -= np.round(103.8827).astype('uint8')
+                # x_temp[..., 2] -= np.round(131.0912).astype('uint8')
         else:
             raise NotImplementedError
 
         return x_temp
 
-    def faceembedding(self, face, celebdata):
-        dist = []
-        for i in range(len(celebdata)):
-            celebs = np.array(celebdata[i])
-            dist.append(np.linalg.norm(face - celebs))
+    # def faceembedding(self, face, celebdata):
+    #     dist = []
+    #     for i in range(len(celebdata)):
+    #         celebs = np.array(celebdata[i])
+    #         dist.append(np.linalg.norm(face - celebs))
 
-        return dist
+    #     return dist
