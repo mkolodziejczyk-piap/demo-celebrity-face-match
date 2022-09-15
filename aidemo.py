@@ -17,8 +17,8 @@ from gi.repository import Gtk, GLib, GObject
 
 import copy
 
-# CAMERA = 'VM-016'
-CAMERA = 'USB'
+CAMERA = 'VM-016'
+#CAMERA = 'USB'
 
 if CAMERA == 'VM-016':
     import camvm016 as camera
