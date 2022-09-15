@@ -18,7 +18,7 @@ from gi.repository import Gtk, GLib, GObject
 import copy
 
 CAMERA = 'VM-016'
-#CAMERA = 'USB'
+# CAMERA = 'USB'
 
 if CAMERA == 'VM-016':
     import camvm016 as camera
@@ -36,7 +36,8 @@ class AiDemo(Gtk.Window):
         # model_file = 'demo-data/models/tflite/quantized_modelh5-15.tflite'
         # model_file = 'lite-model_movenet_singlepose_lightning_3.tflite'
         # model_file = 'posenet_mobilenet_v1_100_257x257_multi_kpt_stripped.tflite'
-        model_file = 'lite-model_movenet_singlepose_lightning_tflite_int8_4.tflite'
+        # model_file = 'lite-model_movenet_singlepose_lightning_tflite_int8_4.tflite'
+        model_file = 'lite-model_movenet_singlepose_lightning_tflite_float16_4.tflite'
         # embeddings_file = 'demo-data/EMBEDDINGS_quantized_modelh5-15.json'
 
         self.EDGES = {

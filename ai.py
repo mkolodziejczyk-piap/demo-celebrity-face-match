@@ -52,7 +52,7 @@ class Ai:
             samples = np.expand_dims(face, axis=0)
             samples = self.preprocess_input(samples,
                                             data_format='channels_last',
-                                            version=2)
+                                            version=2) #.astype('float16')
 
         output_data = self.run_tflite(samples)
 
