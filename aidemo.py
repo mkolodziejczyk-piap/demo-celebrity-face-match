@@ -34,7 +34,9 @@ class AiDemo(Gtk.Window):
         Gtk.Window.__init__(self, title='Celebrity Face Match')
 
         # model_file = 'demo-data/models/tflite/quantized_modelh5-15.tflite'
-        model_file = 'lite-model_movenet_singlepose_lightning_3.tflite'
+        # model_file = 'lite-model_movenet_singlepose_lightning_3.tflite'
+        # model_file = 'posenet_mobilenet_v1_100_257x257_multi_kpt_stripped.tflite'
+        model_file = 'lite-model_movenet_singlepose_lightning_tflite_int8_4.tflite'
         # embeddings_file = 'demo-data/EMBEDDINGS_quantized_modelh5-15.json'
 
         self.EDGES = {
@@ -59,7 +61,7 @@ class AiDemo(Gtk.Window):
         }
 
         self.ai = Ai(os.path.join(sys.path[0], model_file),
-                     modeltype = 'normal')
+                     modeltype = 'quant')
 
         self.cap = camera.get_camera()
 

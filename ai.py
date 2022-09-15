@@ -17,6 +17,8 @@ class Ai:
         self.modeltype = modeltype
         self.width = 192
         self.height = 192
+        # self.width = 257
+        # self.height = 257
 
     def initialize(self):
         start = time.time()
@@ -44,7 +46,7 @@ class Ai:
             samples = np.expand_dims(face, axis=0)
             samples = self.preprocess_input(samples,
                                             data_format='channels_last',
-                                            version=3).astype('int8')
+                                            version=3).astype('uint8')
         else:
             face = face.astype('float32')
             samples = np.expand_dims(face, axis=0)
