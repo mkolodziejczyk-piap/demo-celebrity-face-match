@@ -15,10 +15,13 @@ class Ai:
     def __init__(self, model_path, modeltype='quant'):
         self.model_path = model_path
         self.modeltype = modeltype
-        self.width = 192
-        self.height = 192
+        # self.width = 192
+        # self.height = 192
         # self.width = 257
         # self.height = 257
+        self.width = 320
+        self.height = 320
+
 
     def initialize(self):
         start = time.time()

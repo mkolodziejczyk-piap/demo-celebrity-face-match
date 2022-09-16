@@ -37,7 +37,9 @@ class AiDemo(Gtk.Window):
         # model_file = 'lite-model_movenet_singlepose_lightning_3.tflite'
         # model_file = 'posenet_mobilenet_v1_100_257x257_multi_kpt_stripped.tflite'
         # model_file = 'lite-model_movenet_singlepose_lightning_tflite_int8_4.tflite'
-        model_file = 'lite-model_movenet_singlepose_lightning_tflite_float16_4.tflite'
+        # model_file = 'lite-model_movenet_singlepose_lightning_tflite_float16_4.tflite'
+        # model_file = 'movenet_single_pose_lightning_ptq_edgetpu.tflite'
+        model_file = 'lite-model_efficientdet_lite0_int8_1.tflite'
         # embeddings_file = 'demo-data/EMBEDDINGS_quantized_modelh5-15.json'
 
         self.EDGES = {
@@ -326,13 +328,13 @@ class AiDemo(Gtk.Window):
 
             self.image_queue.put(frame.copy())
 
-            with self.lock_kp:
-                if self.keypoints_with_scores is not None:
+            # with self.lock_kp:
+            #     if self.keypoints_with_scores is not None:
 
-                    keypoints_with_scores = copy.deepcopy(self.keypoints_with_scores)
+            #         keypoints_with_scores = copy.deepcopy(self.keypoints_with_scores)
 
-                    self.draw_connections(frame, keypoints_with_scores, self.EDGES, 0.4)
-                    self.draw_keypoints(frame, keypoints_with_scores, 0.4)
+            #         self.draw_connections(frame, keypoints_with_scores, self.EDGES, 0.4)
+            #         self.draw_keypoints(frame, keypoints_with_scores, 0.4)
                 #     (x, y, w, h) = self.faces
                 #     self.faces = None
                 #     framecount = 0
@@ -430,8 +432,8 @@ class AiDemo(Gtk.Window):
 
             kp = self.ai.run_inference(frame)
 
-            with self.lock_kp:
-                self.keypoints_with_scores = self.kp_in_frame(kp, frame)
+            # with self.lock_kp:
+            #     self.keypoints_with_scores = self.kp_in_frame(kp, frame)
 
             # faces = self.face_cascade.detectMultiScale(frame,
             #                                            scaleFactor=1.2,
