@@ -40,7 +40,8 @@ class AiDemo(Gtk.Window):
         # model_file = 'lite-model_movenet_singlepose_lightning_tflite_float16_4.tflite'
         # model_file = 'movenet_single_pose_lightning_ptq_edgetpu.tflite'
         # model_file = 'lite-model_efficientdet_lite0_int8_1.tflite'
-        model_file = 'lite-model_ssd_mobilenet_v1_100_320_uint8_default_1.tflite'
+        # model_file = 'lite-model_ssd_mobilenet_v1_100_320_uint8_default_1.tflite'
+        model_file = 'lite-model_deeplabv3-mobilenetv2-int8_1_default_1.tflite'
         # embeddings_file = 'demo-data/EMBEDDINGS_quantized_modelh5-15.json'
 
         self.EDGES = {
